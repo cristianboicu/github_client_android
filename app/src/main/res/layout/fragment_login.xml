@@ -1,18 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.cristianboicu.githubclient.ui.login.LoginViewModel" />
+    </data>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.LoginFragment">
+        tools:context=".ui.login.LoginFragment">
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
+        <EditText
+            android:id="@+id/et_username"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment" />
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/big_value"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/black"
+            android:hint="@string/enter_github_username"
+            android:textColorHint="#BFBFBF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.45" />
 
-    </FrameLayout>
+        <Button
+            android:id="@+id/btn_navigate_to_repos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/big_value"
+            android:layout_marginVertical="@dimen/medium_value"
+            android:onClick="@{() -> viewModel.showRepositoriesTriggered(etUsername.getText().toString())}"
+            android:text="@string/show_repositories"
+            app:layout_constraintEnd_toEndOf="@id/et_username"
+            app:layout_constraintStart_toStartOf="@+id/et_username"
+            app:layout_constraintTop_toBottomOf="@+id/et_username" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

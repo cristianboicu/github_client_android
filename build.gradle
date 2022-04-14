@@ -7,10 +7,14 @@ buildscript {
     }
     dependencies {
         classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.5.0-alpha04'
+        classpath("com.google.dagger:hilt-android-gradle-plugin:2.38.1")
     }
 
     ext {
         nav_version = '2.4.2'
+        version_dagger_hilt = '2.38.1'
+        version_retrofit = '2.9.0'
+        version_room = '2.4.2'
     }
 }
 

@@ -6,6 +6,6 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.cristianboicu.githubclient.ui.LoginFragment"
+        android:name="com.cristianboicu.githubclient.ui.login.LoginFragment"
         android:label="LoginFragment" />
 </navigation>

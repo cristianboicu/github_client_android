@@ -19,7 +19,7 @@ data class DbGhRepository(
     val created_at: String,
     val updated_at: String,
     val language: String?,
-    val open_issues_count: Int,
+    val open_issues_count: Int
 )
 
 fun List<DbGhRepository>.asDomainModel(): List<GhRepository> {

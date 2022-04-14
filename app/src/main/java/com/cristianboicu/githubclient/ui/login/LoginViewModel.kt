@@ -2,6 +2,7 @@ package com.cristianboicu.githubclient.ui.login
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.cristianboicu.githubclient.data.model.User
 import com.cristianboicu.githubclient.data.repository.DefaultRepository
@@ -16,7 +17,13 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(private val defaultRepository: DefaultRepository) :
     ViewModel() {
 
-    private val status = MutableLiveData<Status>()
+    private val _status = MutableLiveData<Status>()
+
+    private val _localUser = MutableLiveData<User?>()
+
+    val buttonEnabled = _status.map {
+        it != Status.LOADING
+    }
 
     private val _toastError = MutableLiveData<Event<Unit>>()
     val toastError = _toastError
@@ -24,18 +31,28 @@ class LoginViewModel @Inject constructor(private val defaultRepository: DefaultR
     private val _navigateToRepositories = MutableLiveData<Event<Unit>>()
     val navigateToRepositories = _navigateToRepositories
 
-    fun showRepositoriesTriggered(inputUsername: String) {
-        var localUser: User? = null
 
+    init {
+        _status.value = Status.ERROR
+        getLocalUser()
+    }
+
+    private fun getLocalUser() {
         viewModelScope.launch {
-            val res = defaultRepository.getUser()
-            if (res is Result.Success) {
-                localUser = res.data
+            defaultRepository.getUser().let {
+                if (it is Result.Success) {
+                    _localUser.value = it.data
+                } else {
+                    _localUser.value = null
+                }
             }
+        }
+    }
+
+    fun showRepositoriesTriggered(inputUsername: String) {
+        viewModelScope.launch {
             refreshUserData(inputUsername)
-            status.value?.let {
-                checkStatus(it, localUser, inputUsername)
-            }
+            _status.value?.let { checkStatus(it, _localUser.value, inputUsername) }
         }
     }
 
@@ -43,8 +60,8 @@ class LoginViewModel @Inject constructor(private val defaultRepository: DefaultR
         if (inputUsername.isEmpty()) {
             return
         }
-        status.value = Status.LOADING
-        status.value = defaultRepository.refreshUser(inputUsername)
+        _status.value = Status.LOADING
+        _status.value = defaultRepository.refreshUser(inputUsername)
     }
 
     fun checkStatus(status: Status, localUser: User?, userInput: String?) {

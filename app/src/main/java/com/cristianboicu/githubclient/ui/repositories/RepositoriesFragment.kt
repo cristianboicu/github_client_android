@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.cristianboicu.githubclient.R
@@ -18,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class RepositoriesFragment : Fragment() {
 
-    lateinit var viewModel: RepositoriesViewModel
+    private val viewModel: RepositoriesViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,7 +28,7 @@ class RepositoriesFragment : Fragment() {
         val binding: FragmentRepositoriesBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_repositories, container, false)
 
-        viewModel = ViewModelProvider(requireActivity())[RepositoriesViewModel::class.java]
+//        viewModel = ViewModelProvider(requireActivity())[RepositoriesViewModel::class.java]
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 

@@ -35,7 +35,6 @@ object AppModule {
     @Provides
     fun provideDao(db: GhDatabase) = db.getGhDao()
 
-    @Singleton
     @Provides
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
@@ -44,7 +43,6 @@ object AppModule {
             .build()
     }
 
-    @Singleton
     @Provides
     fun provideApiClient(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)

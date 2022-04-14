@@ -33,6 +33,7 @@
             android:id="@+id/btn_navigate_to_repos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:enabled="@{viewModel.buttonEnabled.booleanValue()}"
             android:layout_marginHorizontal="@dimen/big_value"
             android:layout_marginVertical="@dimen/medium_value"
             android:onClick="@{() -> viewModel.showRepositoriesTriggered(etUsername.getText().toString())}"

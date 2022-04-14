@@ -1,7 +1,8 @@
-package com.cristianboicu.githubclient
+package com.cristianboicu.githubclient.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.cristianboicu.githubclient.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

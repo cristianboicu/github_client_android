@@ -7,5 +7,26 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.cristianboicu.githubclient.ui.login.LoginFragment"
-        android:label="LoginFragment" />
+        android:label="LoginFragment">
+        <action
+            android:id="@+id/showRepositories"
+            app:destination="@id/repositoriesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/repositoriesFragment"
+        android:name="com.cristianboicu.githubclient.ui.repositories.RepositoriesFragment"
+        android:label="RepositoriesFragment">
+        <action
+            android:id="@+id/showDetails"
+
+            app:destination="@id/detailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.cristianboicu.githubclient.ui.details.DetailsFragment"
+        android:label="DetailsFragment">
+        <argument
+            android:name="id"
+            app:argType="long" />
+    </fragment>
 </navigation>

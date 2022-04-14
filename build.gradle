@@ -15,6 +15,9 @@ buildscript {
         version_dagger_hilt = '2.38.1'
         version_retrofit = '2.9.0'
         version_room = '2.4.2'
+        lifecycle_version = '2.4.1'
+        version_glide = '4.13.0'
+        coroutinesVersion = '1.6.0-native-mt'
     }
 }
 

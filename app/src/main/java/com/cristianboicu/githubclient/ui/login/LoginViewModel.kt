@@ -52,7 +52,7 @@ class LoginViewModel @Inject constructor(private val defaultRepository: DefaultR
     fun showRepositoriesTriggered(inputUsername: String) {
         viewModelScope.launch {
             refreshUserData(inputUsername)
-            _status.value?.let { checkStatus(it, _localUser.value, inputUsername) }
+            checkStatus(_status.value, _localUser.value, inputUsername)
         }
     }
 
@@ -64,7 +64,7 @@ class LoginViewModel @Inject constructor(private val defaultRepository: DefaultR
         _status.value = defaultRepository.refreshUser(inputUsername)
     }
 
-    fun checkStatus(status: Status, localUser: User?, userInput: String?) {
+    fun checkStatus(status: Status?, localUser: User?, userInput: String?) {
         if (status == Status.ERROR) {
             _toastError.value = Event(Unit)
             if (checkIfUserStoredInDb(localUser, userInput)) {

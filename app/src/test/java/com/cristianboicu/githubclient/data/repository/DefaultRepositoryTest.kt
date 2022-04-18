@@ -1,32 +1,91 @@
 package com.cristianboicu.githubclient.data.repository
 
-import org.junit.Assert.*
-
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.cristianboicu.githubclient.MainCoroutineRule
+import com.cristianboicu.githubclient.data.local.FakeLocalDataSource
+import com.cristianboicu.githubclient.data.model.DbGhRepository
+import com.cristianboicu.githubclient.data.model.User
+import com.cristianboicu.githubclient.data.remote.FakeRemoteDataSource
+import com.cristianboicu.githubclient.getOrAwaitValueTest
+import com.cristianboicu.githubclient.utils.Result
+import com.cristianboicu.githubclient.utils.Status
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.samePropertyValuesAs
+import org.hamcrest.core.IsEqual
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultRepositoryTest {
 
-    @Test
-    fun getUser() {
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
+
+    @ExperimentalCoroutinesApi
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
+
+    private lateinit var defaultRepository: DefaultRepository
+    private lateinit var remoteDataSource: FakeRemoteDataSource
+    private lateinit var localDataSource: FakeLocalDataSource
+
+    private val username = "username"
+    private val remoteRepository0 =
+        DbGhRepository(0, "", "", false, "", "", "", "", "", 0)
+    private val remoteRepository1 =
+        DbGhRepository(1, "", "", false, "", "", "", "", "", 0)
+    private val remoteRepository2 =
+        DbGhRepository(2, "", "", false, "", "", "", "", "", 0)
+
+    private val remoteRepositories =
+        listOf<DbGhRepository>(remoteRepository0, remoteRepository1, remoteRepository2)
+
+    private val localUser: User? = null
+    private val localRepositories = mutableListOf<DbGhRepository>()
+
+    @Before
+    fun setUpRepository() {
+        remoteDataSource = FakeRemoteDataSource(remoteRepositories)
+        localDataSource = FakeLocalDataSource(localRepositories, localUser)
+        // Get a reference to the class under test
+        defaultRepository = DefaultRepository(
+            localDataSource, remoteDataSource
+        )
     }
 
     @Test
-    fun fetchUser() {
+    fun refreshUser_sameUserStoredLocally() = runTest {
+        val status = defaultRepository.refreshUser(username)
+
+        val localUser = defaultRepository.getUser().let {
+            if (it is Result.Success)
+                it.data
+        }
+        val remoteUser = defaultRepository.fetchUser(username).let {
+            if (it is Result.Success)
+                it.data
+        }
+
+        assertThat(status, `is`(Status.SUCCESS))
+        assertThat(localUser, samePropertyValuesAs(remoteUser))
     }
 
     @Test
-    fun refreshUser() {
-    }
+    fun refreshRepositories_sameRepositoriesStoredLocally() = runTest {
+        defaultRepository.refreshRepositories(username)
 
-    @Test
-    fun getRepositoryById() {
-    }
+        val localRepos = defaultRepository.observeRepositories().getOrAwaitValueTest().let { it ->
+            if (it is Result.Success) {
+                it.data
+            } else {
+                emptyList()
+            }
+        }
 
-    @Test
-    fun observeRepositories() {
-    }
-
-    @Test
-    fun refreshRepositories() {
+        assertThat(remoteRepositories, IsEqual(localRepos))
     }
 }

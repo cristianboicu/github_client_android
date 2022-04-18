@@ -1,16 +1,18 @@
 package com.cristianboicu.githubclient.data.repository
 
 import androidx.lifecycle.LiveData
+import com.cristianboicu.githubclient.data.local.ILocalDataSource
 import com.cristianboicu.githubclient.data.local.LocalDataSource
 import com.cristianboicu.githubclient.data.model.DbGhRepository
 import com.cristianboicu.githubclient.data.model.User
+import com.cristianboicu.githubclient.data.remote.IRemoteDataSource
 import com.cristianboicu.githubclient.data.remote.RemoteDataSource
 import com.cristianboicu.githubclient.utils.Result
 import com.cristianboicu.githubclient.utils.Status
 
 class DefaultRepository(
-    private val localDataSource: LocalDataSource,
-    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: ILocalDataSource,
+    private val remoteDataSource: IRemoteDataSource,
 ) : IDefaultRepository {
 
     override suspend fun getUser(): Result<User> {

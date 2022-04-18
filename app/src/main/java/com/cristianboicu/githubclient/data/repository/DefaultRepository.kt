@@ -1,6 +1,5 @@
 package com.cristianboicu.githubclient.data.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.cristianboicu.githubclient.data.local.LocalDataSource
 import com.cristianboicu.githubclient.data.model.DbGhRepository
@@ -22,7 +21,6 @@ class DefaultRepository(
 
     override suspend fun refreshUser(username: String): Status {
         val fetchedUser = fetchUser(username)
-        Log.d("TESTDefaultRepository", fetchedUser.toString())
         return if (fetchedUser is Result.Success) {
             try {
                 localDataSource.deleteUser()
@@ -46,7 +44,6 @@ class DefaultRepository(
 
     override suspend fun refreshRepositories(username: String) {
         val fetchedRepositories = remoteDataSource.getUserRepositories(username)
-        Log.d("TESTDefaultRepository", fetchedRepositories.toString())
         if (fetchedRepositories is Result.Success) {
             try {
                 localDataSource.deleteRepositories()

@@ -6,6 +6,7 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.cristianboicu.githubclient.data.model.User
 import com.cristianboicu.githubclient.data.repository.DefaultRepository
+import com.cristianboicu.githubclient.data.repository.IDefaultRepository
 import com.cristianboicu.githubclient.utils.Event
 import com.cristianboicu.githubclient.utils.Result
 import com.cristianboicu.githubclient.utils.Status
@@ -14,23 +15,25 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val defaultRepository: DefaultRepository) :
+class LoginViewModel @Inject constructor(private val defaultRepository: IDefaultRepository) :
     ViewModel() {
 
     private val _status = MutableLiveData<Status>()
+    val status = _status
 
     private val _localUser = MutableLiveData<User?>()
+    val localUser = _localUser
 
-    val buttonEnabled = _status.map {
+    private val _buttonEnabled = _status.map {
         it != Status.LOADING
     }
+    val buttonEnabled = _buttonEnabled
 
     private val _toastError = MutableLiveData<Event<Unit>>()
     val toastError = _toastError
 
     private val _navigateToRepositories = MutableLiveData<Event<Unit>>()
     val navigateToRepositories = _navigateToRepositories
-
 
     init {
         _status.value = Status.ERROR
@@ -50,6 +53,7 @@ class LoginViewModel @Inject constructor(private val defaultRepository: DefaultR
     }
 
     fun showRepositoriesTriggered(inputUsername: String) {
+        _status.value = Status.LOADING
         viewModelScope.launch {
             refreshUserData(inputUsername)
             checkStatus(_status.value, _localUser.value, inputUsername)
@@ -60,7 +64,6 @@ class LoginViewModel @Inject constructor(private val defaultRepository: DefaultR
         if (inputUsername.isEmpty()) {
             return
         }
-        _status.value = Status.LOADING
         _status.value = defaultRepository.refreshUser(inputUsername)
     }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.cristianboicu.githubclient.data.model.User
 import com.cristianboicu.githubclient.data.model.asDomainModel
 import com.cristianboicu.githubclient.data.repository.DefaultRepository
+import com.cristianboicu.githubclient.data.repository.IDefaultRepository
 import com.cristianboicu.githubclient.utils.Event
 import com.cristianboicu.githubclient.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RepositoriesViewModel @Inject constructor(private val defaultRepository: DefaultRepository) :
+class RepositoriesViewModel @Inject constructor(private val defaultRepository: IDefaultRepository) :
     ViewModel() {
 
     val user = MutableLiveData<User>()

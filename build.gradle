@@ -19,6 +19,10 @@ buildscript {
         version_glide = '4.13.0'
         coroutinesVersion = '1.6.0-native-mt'
         hamcrestVersion = '2.2'
+        androidXTestCoreVersion = '1.4.0'
+        robolectricVersion = '4.7.3'
+        archTestingVersion = '2.1.0'
+        coroutinesVersion = '1.6.0-native-mt'
     }
 }
 

@@ -1,4 +1,4 @@
-package com.cristianboicu.ghclient
+package com.cristianboicu.githubclient
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData

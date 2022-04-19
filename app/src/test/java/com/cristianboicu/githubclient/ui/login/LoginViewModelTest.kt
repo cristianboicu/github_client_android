@@ -8,9 +8,9 @@ import com.cristianboicu.githubclient.data.repository.FakeDefaultRepository
 import com.cristianboicu.githubclient.getOrAwaitValueTest
 import com.cristianboicu.githubclient.utils.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.pauseDispatcher
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers.nullValue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

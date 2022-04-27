@@ -46,7 +46,7 @@ class FakeLocalDataSource(
     }
 
     override suspend fun saveRepositories(repositories: List<DbGhRepository>) {
-        this.repositories = repositories as MutableList<DbGhRepository>
+        this.repositories = repositories.toMutableList()
         observableRepositories.postValue(this.repositories)
     }
 

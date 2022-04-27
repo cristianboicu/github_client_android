@@ -1,12 +1,25 @@
 package com.cristianboicu.githubclient.data.local
 
+import android.content.Context
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.room.Room
 import androidx.test.filters.SmallTest
 import com.cristianboicu.githubclient.data.model.DbGhRepository
 import com.cristianboicu.githubclient.data.model.User
+import com.cristianboicu.githubclient.data.repository.FakeAndroidDefaultRepository
+import com.cristianboicu.githubclient.data.repository.IDefaultRepository
+import com.cristianboicu.githubclient.di.AppModule
 import com.cristianboicu.githubclient.getOrAwaitValue
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
@@ -17,12 +30,42 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
-import javax.inject.Named
+import javax.inject.Singleton
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @SmallTest
+@UninstallModules(AppModule::class)
 @HiltAndroidTest
 class GhDaoTest {
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    abstract class TestAppModule {
+        @Binds
+        abstract fun bindDefaultRepository(
+            defaultRepository: FakeAndroidDefaultRepository,
+        ): IDefaultRepository
+
+        companion object {
+            @Singleton
+            @Provides
+            fun provideDefaultRepository(
+            ): FakeAndroidDefaultRepository =
+                FakeAndroidDefaultRepository(mutableListOf(), mutableListOf(), null)
+
+            @Provides
+            fun provideDao(db: GhDatabase): GhDao = db.getGhDao()
+
+            @Provides
+            fun provideInMemoryDb(@ApplicationContext context: Context): GhDatabase {
+                Log.d("TEST", "in memory db")
+                return Room.inMemoryDatabaseBuilder(
+                    context,
+                    GhDatabase::class.java
+                ).allowMainThreadQueries().build()
+            }
+        }
+    }
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
@@ -31,11 +74,9 @@ class GhDaoTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
-    @Named("inMemoryDb")
     lateinit var database: GhDatabase
 
     @Inject
-    @Named("inMemoryDao")
     lateinit var dao: GhDao
 
     @Before

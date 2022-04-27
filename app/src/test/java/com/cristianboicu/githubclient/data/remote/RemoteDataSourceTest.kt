@@ -21,7 +21,7 @@ class RemoteDataSourceTest {
         DbGhRepository(2, "", "", false, "", "", "", "", "", 0)
 
     private val remoteRepositories =
-        listOf<DbGhRepository>(remoteRepository0, remoteRepository1, remoteRepository2)
+        listOf(remoteRepository0, remoteRepository1, remoteRepository2)
 
 
     private val username = "username"

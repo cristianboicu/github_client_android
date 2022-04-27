@@ -8,9 +8,12 @@ import com.cristianboicu.githubclient.data.repository.FakeDefaultRepository
 import com.cristianboicu.githubclient.getOrAwaitValueTest
 import com.cristianboicu.githubclient.utils.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.pauseDispatcher
+import kotlinx.coroutines.test.resumeDispatcher
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.not
-import org.hamcrest.Matchers.nullValue
+import org.hamcrest.Matchers.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -31,8 +34,8 @@ class LoginViewModelTest {
 
     @Before
     fun setUp() {
-        defaultRepository = FakeDefaultRepository(mutableListOf<DbGhRepository>(),
-            mutableListOf<DbGhRepository>(),
+        defaultRepository = FakeDefaultRepository(mutableListOf(),
+            mutableListOf(),
             localUser)
         loginViewModel = LoginViewModel(defaultRepository)
     }
@@ -68,14 +71,14 @@ class LoginViewModelTest {
         assertThat(value.getContentIfNotHandled(), not(nullValue()))
     }
 
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    @Test
-//    fun showRepositoriesTriggered_StatusLoading_DisablesButton() {
-//        mainCoroutineRule.pauseDispatcher()
-//
-//        loginViewModel.showRepositoriesTriggered("username")
-//
-//        assertThat(loginViewModel.status.value, `is`(Status.LOADING))
-//        assertThat(loginViewModel.buttonEnabled.value, `is`(false))
-//    }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun showRepositoriesTriggered_StatusLoading_DisablesButton(){
+        mainCoroutineRule.pauseDispatcher()
+
+        loginViewModel.showRepositoriesTriggered("username")
+
+        assertThat(loginViewModel.status.getOrAwaitValueTest(), `is`(Status.LOADING))
+        assertThat(loginViewModel.buttonEnabled.getOrAwaitValueTest(), `is`(false))
+    }
 }

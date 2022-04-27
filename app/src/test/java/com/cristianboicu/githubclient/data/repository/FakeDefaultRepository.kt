@@ -22,6 +22,11 @@ class FakeDefaultRepository(
         _shouldReturnError = value
     }
 
+    override suspend fun deleteAll() {
+        localData.clear()
+        user = null
+    }
+
     override suspend fun getUser(): Result<User> {
         if (_shouldReturnError) {
             return Result.Error(Exception("Unknown error"))

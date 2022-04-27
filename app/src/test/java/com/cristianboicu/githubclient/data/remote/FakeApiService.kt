@@ -1,6 +1,5 @@
 package com.cristianboicu.githubclient.data.remote
 
-import android.util.Log
 import com.cristianboicu.githubclient.data.model.DbGhRepository
 import com.cristianboicu.githubclient.data.model.User
 import kotlinx.coroutines.delay

@@ -12,8 +12,7 @@ import com.cristianboicu.githubclient.utils.Status
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.samePropertyValuesAs
+import org.hamcrest.Matchers.*
 import org.hamcrest.core.IsEqual
 import org.junit.Before
 import org.junit.Rule
@@ -42,7 +41,7 @@ class DefaultRepositoryTest {
         DbGhRepository(2, "", "", false, "", "", "", "", "", 0)
 
     private val remoteRepositories =
-        listOf<DbGhRepository>(remoteRepository0, remoteRepository1, remoteRepository2)
+        listOf(remoteRepository0, remoteRepository1, remoteRepository2)
 
     private val localUser: User? = null
     private val localRepositories = mutableListOf<DbGhRepository>()
@@ -51,7 +50,7 @@ class DefaultRepositoryTest {
     fun setUpRepository() {
         remoteDataSource = FakeRemoteDataSource(remoteRepositories)
         localDataSource = FakeLocalDataSource(localRepositories, localUser)
-        // Get a reference to the class under test
+
         defaultRepository = DefaultRepository(
             localDataSource, remoteDataSource
         )
@@ -87,5 +86,32 @@ class DefaultRepositoryTest {
         }
 
         assertThat(remoteRepositories, IsEqual(localRepos))
+    }
+
+    @Test
+    fun deleteAll_noDataStored() = runTest {
+        defaultRepository.refreshUser(username)
+        defaultRepository.refreshRepositories(username)
+
+        defaultRepository.deleteAll()
+
+        val localRepos = defaultRepository.observeRepositories().getOrAwaitValueTest().let {
+            if (it is Result.Success) {
+                it.data
+            } else {
+                emptyList()
+            }
+        }
+
+        val localUser = defaultRepository.getUser().let {
+            if (it is Result.Success) {
+                it.data
+            } else {
+                null
+            }
+        }
+
+        assertThat(localRepos, `is`(emptyList()))
+        assertThat(localUser, `is`(nullValue()))
     }
 }

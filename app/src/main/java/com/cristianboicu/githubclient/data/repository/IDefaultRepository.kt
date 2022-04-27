@@ -7,6 +7,9 @@ import com.cristianboicu.githubclient.utils.Result
 import com.cristianboicu.githubclient.utils.Status
 
 interface IDefaultRepository {
+
+    suspend fun deleteAll()
+
     suspend fun getUser(): Result<User>
 
     suspend fun fetchUser(username: String): Result<User>

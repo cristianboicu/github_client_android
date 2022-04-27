@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cristianboicu.githubclient.data.model.User
 import com.cristianboicu.githubclient.data.model.asDomainModel
-import com.cristianboicu.githubclient.data.repository.DefaultRepository
 import com.cristianboicu.githubclient.data.repository.IDefaultRepository
 import com.cristianboicu.githubclient.utils.Event
 import com.cristianboicu.githubclient.utils.Result
@@ -32,12 +31,13 @@ class RepositoriesViewModel @Inject constructor(private val defaultRepository: I
 
     init {
         viewModelScope.launch {
-            val res = defaultRepository.getUser()
-            if (res is Result.Success) {
-                res.data.let {
-                    user.value = it
+            defaultRepository.getUser().let { result ->
+                if (result is Result.Success) {
+                    result.data.let {
+                        user.value = it
+                    }
+                    defaultRepository.refreshRepositories(user.value!!.login)
                 }
-                defaultRepository.refreshRepositories(user.value!!.login)
             }
         }
     }
@@ -47,4 +47,5 @@ class RepositoriesViewModel @Inject constructor(private val defaultRepository: I
             _navigateToDetails.value = Event(it)
         }
     }
+
 }

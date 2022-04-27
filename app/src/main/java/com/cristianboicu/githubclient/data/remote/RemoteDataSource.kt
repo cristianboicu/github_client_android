@@ -6,7 +6,6 @@ import com.cristianboicu.githubclient.utils.Result
 import javax.inject.Inject
 
 class RemoteDataSource @Inject constructor(private val apiService: ApiService) : IRemoteDataSource {
-
     override suspend fun getUser(username: String): Result<User> {
         return try {
             val userDataResponse = apiService.getUserData(username)

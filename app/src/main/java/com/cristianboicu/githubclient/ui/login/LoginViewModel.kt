@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.cristianboicu.githubclient.data.model.User
-import com.cristianboicu.githubclient.data.repository.DefaultRepository
 import com.cristianboicu.githubclient.data.repository.IDefaultRepository
 import com.cristianboicu.githubclient.utils.Event
 import com.cristianboicu.githubclient.utils.Result
@@ -55,16 +54,16 @@ class LoginViewModel @Inject constructor(private val defaultRepository: IDefault
     fun showRepositoriesTriggered(inputUsername: String) {
         _status.value = Status.LOADING
         viewModelScope.launch {
-            refreshUserData(inputUsername)
+            _status.value = refreshUserData(inputUsername)
             checkStatus(_status.value, _localUser.value, inputUsername)
         }
     }
 
-    private suspend fun refreshUserData(inputUsername: String) {
+    private suspend fun refreshUserData(inputUsername: String): Status {
         if (inputUsername.isEmpty()) {
-            return
+            return Status.ERROR
         }
-        _status.value = defaultRepository.refreshUser(inputUsername)
+        return defaultRepository.refreshUser(inputUsername)
     }
 
     fun checkStatus(status: Status?, localUser: User?, userInput: String?) {

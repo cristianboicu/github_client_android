@@ -19,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class RepositoriesFragment : Fragment() {
 
-    private val viewModel: RepositoriesViewModel by viewModels()
+    lateinit var viewModel: RepositoriesViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +28,7 @@ class RepositoriesFragment : Fragment() {
         val binding: FragmentRepositoriesBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_repositories, container, false)
 
-//        viewModel = ViewModelProvider(requireActivity())[RepositoriesViewModel::class.java]
+        viewModel = ViewModelProvider(this)[RepositoriesViewModel::class.java]
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
